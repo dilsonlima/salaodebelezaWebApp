@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <a href="{{ url_for('add_appointment') }}" class="btn">Adicionar Agendamento</a>
+    <a href="{{ url_for('view_appointments') }}" class="btn">Ver Agendamentos</a>
+{% endblock %}

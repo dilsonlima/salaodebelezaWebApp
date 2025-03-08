@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Adicionar Agendamento</h2>
+    <form method="POST">
+        <label for="client_name">Nome da Cliente:</label>
+        <input type="text" id="client_name" name="client_name" required>
+        <br>
+        <label for="service_description">Descrição do Serviço:</label>
+        <input type="text" id="service_description" name="service_description" required>
+        <br>
+        <label for="service_value">Valor do Serviço:</label>
+        <input type="number" step="0.01" id="service_value" name="service_value" required>
+        <br>
+        <label for="date">Data:</label>
+        <input type="date" id="date" name="date" required>
+        <br>
+        <label for="time">Hora:</label>
+        <input type="time" id="time" name="time" required>
+        <br>
+        <label for="recurrence">Recorrência:</label>
+        <select id="recurrence" name="recurrence">
+            <option value="1x">1x</option>
+            <option value="1 a cada 15 dias">1 a cada 15 dias</option>
+            <option value="toda semana">Toda semana</option>
+            <option value="todo mês">Todo mês</option>
+        </select>
+        <br>
+        <button type="submit" class="btn">Adicionar</button>
+    </form>
+{% endblock %}
