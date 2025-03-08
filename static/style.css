@@ -118,3 +118,345 @@ input[type="checkbox"] {
 .btn:hover {
     background-color: #C71585;
 }
+
+/* Estilo para as linhas tachadas */
+.pago {
+    text-decoration: line-through;
+    font-style: italic;
+    color: #888; /* Cor mais clara para serviços pagos */
+}
+
+/* Estilo para os checkboxes */
+input[type="checkbox"] {
+    transform: scale(1.2); /* Aumenta o tamanho do checkbox */
+    margin: 0;
+}
+
+/* Estilo para o botão de atualização */
+.btn {
+    background-color: #FF69B4;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.btn:hover {
+    background-color: #C71585;
+}
+
+/* Estilo para as linhas pagas */
+.pago {
+    font-weight: bold; /* Texto em negrito */
+}
+
+/* Estilo para os checkboxes */
+input[type="checkbox"] {
+    transform: scale(1.2); /* Aumenta o tamanho do checkbox */
+    margin: 0;
+}
+
+/* Estilo para o botão de salvar */
+.btn {
+    background-color: #FF69B4;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.btn:hover {
+    background-color: #C71585;
+}
+
+/* Estilo para o menu vertical */
+.menu-vertical {
+    width: 20%;
+    padding: 10px;
+    background-color: #f8f8f8;
+    margin-right: 20px;
+}
+
+.menu-vertical ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.menu-vertical li {
+    margin-bottom: 10px;
+}
+
+.menu-vertical a {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+}
+
+.menu-vertical a:hover {
+    color: #FF69B4;
+}
+
+/* Estilo para as seções de agendamentos */
+.agendamentos-container {
+    width: 100%;
+}
+
+.month-section {
+    margin-bottom: 30px;
+}
+
+.month-section h3 {
+    background-color: #FF69B4;
+    padding: 10px;
+    color: white;
+    border-radius: 5px;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Estilo para as linhas pagas */
+.pago {
+    font-weight: bold;
+}
+
+/* Estilo para os checkboxes */
+input[type="checkbox"] {
+    transform: scale(1.2);
+    margin: 0;
+}
+
+/* Estilo para o botão de salvar */
+.btn {
+    background-color: #FF69B4;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.btn:hover {
+    background-color: #C71585;
+}
+
+/* Estilo para o botão fixo na parte superior */
+.floating-save-button {
+    position: fixed;
+    top: 80px; /* Ajuste a distância do topo conforme necessário */
+    right: 20px;
+    z-index: 1000; /* Garante que o botão fique acima de outros elementos */
+}
+
+/* Estilo para o botão de salvar */
+.btn {
+    background-color: #FF69B4;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adiciona sombra para destacar o botão */
+}
+
+.btn:hover {
+    background-color: #C71585;
+}
+
+
+/* Estilo para o cabeçalho */
+.header {
+    display: flex;
+    align-items: center; /* Alinha o logo e o título verticalmente */
+    margin-bottom: 20px;
+}
+
+/* Estilo para o logo */
+.logo {
+    width: 50px; /* Tamanho pequeno */
+    height: auto; /* Mantém a proporção */
+    margin-right: 10px; /* Espaçamento entre o logo e o título */
+}
+
+/* Estilo para o botão fixo na parte superior */
+.floating-save-button {
+    position: fixed;
+    top: 80px; /* Ajuste a distância do topo conforme necessário */
+    right: 20px;
+    z-index: 1000; /* Garante que o botão fique acima de outros elementos */
+}
+
+/* Estilo para o botão de salvar */
+.btn {
+    background-color: #FF69B4;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adiciona sombra para destacar o botão */
+}
+
+.btn:hover {
+    background-color: #C71585;
+}
+
+/* Estilo para o cabeçalho */
+.header {
+    display: flex;
+    align-items: center; /* Alinha o logo e o título verticalmente */
+    padding: 10px;
+    background-color: #FFF0F5; /* Cor de fundo do cabeçalho */
+    border-bottom: 1px solid #FF69B4; /* Linha inferior */
+}
+
+/* Estilo para o logo */
+.logo {
+    width: 50px; /* Tamanho pequeno */
+    height: auto; /* Mantém a proporção */
+    margin-right: 10px; /* Espaçamento entre o logo e o título */
+}
+
+/* Estilo para o título */
+.header h1 {
+    margin: 0;
+    color: #C71585; /* Cor do título */
+}
+
+/* Estilo para o container principal */
+.container {
+    padding: 20px;
+}
+
+/* Estilo para o rodapé */
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #FF69B4;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.footer-menu {
+    display: flex;
+    justify-content: space-around;
+}
+
+.footer-menu .btn {
+    background-color: white;
+    color: #FF69B4;
+    padding: 8px 16px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.footer-menu .btn:hover {
+    background-color: #C71585;
+    color: white;
+}
+
+/* Estilo para o container do formulário de adicionar agendamento */
+.add-appointment-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.add-appointment-container h2 {
+    text-align: center;
+    color: #C71585;
+    margin-bottom: 20px;
+}
+
+/* Estilo para o formulário */
+.add-appointment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Estilo para os grupos de formulário */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #333;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px;
+    border: 1px solid #FF69B4;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #C71585;
+}
+
+/* Estilo para o botão de adicionar */
+.add-appointment-form .btn {
+    background-color: #FF69B4;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.add-appointment-form .btn:hover {
+    background-color: #C71585;
+}
+
+.btn-delete {
+    background-color: #ff4d4d; /* Vermelho */
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.btn-delete:hover {
+    background-color: #cc0000; /* Vermelho mais escuro */
+}

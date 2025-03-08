@@ -1,49 +1,163 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Agendamentos</h2>
-    <form method="POST" action="{{ url_for('update_payment_status') }}">
-        <table>
-            <thead>
-                <tr>
-                    <th>Pago</th>
-                    <th>Cliente</th>
-                    <th>Serviço</th>
-                    <th>Valor</th>
-                    <th>Data</th>
-                    <th>Hora</th>
-                    <th>Recorrência</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for appointment in appointments %}
-                    <tr style="background-color: {{ appointment[7] }};">
-                        <td>
-                            <input type="checkbox" name="pago" value="{{ appointment[0] }}" 
-                                   {% if appointment[8] %}checked{% endif %}>
-                        </td>
-                        <td {% if appointment[8] %}class="pago"{% endif %}>
-                            {{ appointment[1] }}
-                        </td>
-                        <td {% if appointment[8] %}class="pago"{% endif %}>
-                            {{ appointment[2] }}
-                        </td>
-                        <td {% if appointment[8] %}class="pago"{% endif %}>
-                            R$ {{ "%.2f"|format(appointment[3]) }}
-                        </td>
-                        <td {% if appointment[8] %}class="pago"{% endif %}>
-                            {{ appointment[4] }}
-                        </td>
-                        <td {% if appointment[8] %}class="pago"{% endif %}>
-                            {{ appointment[5] }}
-                        </td>
-                        <td {% if appointment[8] %}class="pago"{% endif %}>
-                            {{ appointment[6] }}
-                        </td>
-                    </tr>
+
+    <!-- Botão fixo na parte superior -->
+    <div class="floating-save-button">
+        <button type="button" class="btn" onclick="savePayments()">Salvar Pagamentos</button>
+    </div>
+
+    <div class="container">
+        <!-- Menu Vertical -->
+        <div class="menu-vertical">
+            <h3>Meses</h3>
+            <ul>
+                {% for month_year, data in grouped_appointments.items() %}
+                    <li>
+                        <a href="#{{ month_year }}" style="color: {{ data.color }};">
+                            {{ data.month_name }} - R$ {{ "%.2f"|format(data.total_value) }}
+                        </a>
+                    </li>
                 {% endfor %}
-            </tbody>
-        </table>
-        <button type="submit" class="btn">Atualizar Status de Pagamento</button>
-    </form>
+            </ul>
+        </div>
+
+        <!-- Agendamentos por Mês -->
+        <div class="agendamentos-container">
+            {% for month_year, data in grouped_appointments.items() %}
+                <div id="{{ month_year }}" class="month-section">
+                    <h3 style="background-color: {{ data.color }};">
+                        {{ data.month_name }} - Total: R$ {{ "%.2f"|format(data.total_value) }}
+                    </h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Pago</th>
+                                    <th>Cliente</th>
+                                    <th>Serviço</th>
+                                    <th>Valor</th>
+                                    <th>Data</th>
+                                    <th>Hora</th>
+                                    <th>Recorrência</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for appointment in data.appointments %}
+                                <!-- Dentro da tabela, na linha de cada agendamento -->
+                                <tr id="row-{{ appointment[0] }}" style="background-color: {{ data.color }}20;">
+                                    <td>
+                                        <input type="checkbox" name="pago" value="{{ appointment[0] }}" 
+                                            {% if appointment[8] %}checked{% endif %}>
+                                    </td>
+                                    <td {% if appointment[8] %}class="pago"{% endif %}>
+                                        {{ appointment[1] }}
+                                    </td>
+                                    <td {% if appointment[8] %}class="pago"{% endif %}>
+                                        {{ appointment[2] }}
+                                    </td>
+                                    <td {% if appointment[8] %}class="pago"{% endif %}>
+                                        R$ {{ "%.2f"|format(appointment[3]) }}
+                                    </td>
+                                    <td {% if appointment[8] %}class="pago"{% endif %}>
+                                        {{ appointment[4] }}
+                                    </td>
+                                    <td {% if appointment[8] %}class="pago"{% endif %}>
+                                        {{ appointment[5] }}
+                                    </td>
+                                    <td {% if appointment[8] %}class="pago"{% endif %}>
+                                        {{ appointment[6] }}
+                                    </td>
+                                    <td>
+                                        <!-- Botão de exclusão -->
+                                        <button class="btn-delete" onclick="deleteAppointment({{ appointment[0] }})">Excluir</button>
+                                    </td>
+                                </tr>                              
+                      {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- JavaScript para salvar os pagamentos -->
+    <script>
+function savePayments() {
+    const checkboxes = document.querySelectorAll('input[name="pago"]'); // Coleta todos os checkboxes
+    const appointmentIds = Array.from(checkboxes).map(checkbox => checkbox.value);
+    const checkedIds = Array.from(checkboxes)
+        .filter(checkbox => checkbox.checked) // Filtra apenas os checkboxes marcados
+        .map(checkbox => checkbox.value);
+
+    fetch('/update_payment_status', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ appointmentIds: checkedIds }), // Envia apenas os IDs marcados
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro na requisição');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            // Atualiza o estilo das linhas
+            appointmentIds.forEach(id => {
+                const row = document.getElementById(`row-${id}`);
+                const checkbox = row.querySelector('input[name="pago"]');
+                if (checkbox.checked) {
+                    // Adiciona a classe 'pago' para linhas marcadas
+                    row.querySelectorAll('td').forEach(td => td.classList.add('pago'));
+                } else {
+                    // Remove a classe 'pago' para linhas desmarcadas
+                    row.querySelectorAll('td').forEach(td => td.classList.remove('pago'));
+                }
+            });
+            alert('Pagamentos salvos com sucesso!');
+        } else {
+            alert('Erro ao salvar os pagamentos: ' + (data.error || ''));
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao salvar os pagamentos.');
+    });
+}
+    </script>
+
+<!-- script para deletar os agendamentos-->
+    <script>
+function deleteAppointment(appointmentId) {
+    if (confirm('Tem certeza que deseja excluir este agendamento?')) {
+        fetch(`/delete_appointment/${appointmentId}`, {
+            method: 'DELETE',
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw new Error(err.error || 'Erro na requisição'); });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert('Agendamento excluído com sucesso!');
+                // Remove a linha da tabela após a exclusão
+                document.getElementById(`row-${appointmentId}`).remove();
+            } else {
+                throw new Error(data.error || 'Erro ao excluir o agendamento');
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert(error.message);
+        });
+    }
+}
+
+    </script>
 {% endblock %}

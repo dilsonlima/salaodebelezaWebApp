@@ -7,11 +7,18 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <!-- Cabeçalho com logo e título -->
+    <div class="header">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
+        <h1>Agenda de Beleza</h1>
+    </div>
+
+    <!-- Conteúdo da página -->
     <div class="container">
         {% block content %}{% endblock %}
     </div>
 
-    <!-- Menu Suspenso no Rodapé -->
+    <!-- Rodapé -->
     <footer>
         <div class="footer-menu">
             <a href="{{ url_for('index') }}" class="btn">Início</a>

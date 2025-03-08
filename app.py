@@ -19,31 +19,15 @@ def init_db():
                 date TEXT NOT NULL,
                 time TEXT NOT NULL,
                 recurrence TEXT NOT NULL,
-                color TEXT NOT NULL
+                color TEXT NOT NULL,
+                pago BOOLEAN DEFAULT 0  -- Nova coluna
             )
         ''')
         conn.commit()
 
 init_db()
 
-#cria banco de dados pago
-def init_db():
-    with sqlite3.connect(DATABASE) as conn:
-        cursor = conn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS appointments (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                client_name TEXT NOT NULL,
-                service_description TEXT NOT NULL,
-                service_value REAL NOT NULL,
-                date TEXT NOT NULL,
-                time TEXT NOT NULL,
-                recurrence TEXT NOT NULL,
-                color TEXT NOT NULL,
-                pago BOOLEAN DEFAULT 0  -- Novo campo (0 = não pago, 1 = pago)
-            )
-        ''')
-        conn.commit()
+
 
 #Adicionar nova rota para resumo do dia
 from datetime import datetime, time
@@ -127,35 +111,82 @@ def view_appointments():
             cursor = conn.cursor()
             cursor.execute('SELECT * FROM appointments ORDER BY date, time')
             appointments = cursor.fetchall()
+
+            # Agrupa os agendamentos por mês e calcula a soma dos valores
+            grouped_appointments = {}
+            colors = ['#FFB6C1', '#FF69B4', '#FF1493', '#C71585']  # Cores para cada mês
+            for appointment in appointments:
+                date = datetime.strptime(appointment[4], '%Y-%m-%d')  # appointment[4] é a data
+                month_year = date.strftime('%Y-%m')  # Formato: "2023-10"
+                month_name = date.strftime('%B %Y')  # Formato: "October 2023"
+                service_value = float(appointment[3])  # appointment[3] é o valor do serviço
+
+                if month_year not in grouped_appointments:
+                    grouped_appointments[month_year] = {
+                        'month_name': month_name,
+                        'color': colors[(date.month - 1) % len(colors)],  # Cor baseada no mês
+                        'total_value': 0.0,  # Inicializa a soma dos valores
+                        'appointments': []
+                    }
+
+                grouped_appointments[month_year]['total_value'] += service_value
+                grouped_appointments[month_year]['appointments'].append(appointment)
+
     except sqlite3.Error as e:
         print(f"Erro no banco de dados: {e}")
-        appointments = []
+        grouped_appointments = {}
 
-    return render_template('view_appointments.html', appointments=appointments)
-
+    return render_template('view_appointments.html', grouped_appointments=grouped_appointments)
 
 #rota para calcular o pago
+from flask import jsonify  # Certifique-se de que jsonify está importado
+
 @app.route('/update_payment_status', methods=['POST'])
 def update_payment_status():
     try:
+        # Obtém os dados JSON da requisição
+        data = request.get_json()
+        if not data or 'appointmentIds' not in data:
+            return jsonify({'success': False, 'error': 'Dados inválidos'}), 400
+
+        appointment_ids = data['appointmentIds']
+
+        # Atualiza o status de pagamento no banco de dados
         with sqlite3.connect(DATABASE) as conn:
             cursor = conn.cursor()
-            # Obtém todos os IDs dos agendamentos
-            cursor.execute('SELECT id FROM appointments')
-            all_ids = [row[0] for row in cursor.fetchall()]
-
-            # Obtém os IDs dos agendamentos marcados como pagos
-            paid_ids = request.form.getlist('pago')
-
-            # Atualiza o status de pagamento
-            for appointment_id in all_ids:
-                pago = 1 if str(appointment_id) in paid_ids else 0
-                cursor.execute('UPDATE appointments SET pago = ? WHERE id = ?', (pago, appointment_id))
+            # Marca como pago os agendamentos selecionados
+            if appointment_ids:
+                cursor.execute(
+                    'UPDATE appointments SET pago = 1 WHERE id IN ({})'.format(
+                        ','.join(['?'] * len(appointment_ids))
+                    ), appointment_ids)
+            # Marca como não pago os agendamentos não selecionados
+            cursor.execute(
+                'UPDATE appointments SET pago = 0 WHERE id NOT IN ({})'.format(
+                    ','.join(['?'] * len(appointment_ids)) if appointment_ids else '1=1'
+                ), appointment_ids if appointment_ids else [])
             conn.commit()
-    except sqlite3.Error as e:
-        print(f"Erro no banco de dados: {e}")
 
-    return redirect(url_for('view_appointments'))
+        return jsonify({'success': True})
+    except Exception as e:
+        print(f"Erro ao atualizar o status de pagamento: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+    
+
+#Rota para exlusao
+@app.route('/delete_appointment/<int:appointment_id>', methods=['DELETE'])
+def delete_appointment(appointment_id):
+    try:
+        with sqlite3.connect(DATABASE) as conn:
+            cursor = conn.cursor()
+            # Exclui o agendamento com o ID fornecido
+            cursor.execute('DELETE FROM appointments WHERE id = ?', (appointment_id,))
+            conn.commit()
+            return jsonify({'success': True})
+    except Exception as e:
+            print(f"Erro ao excluir o agendamento: {e}")
+    return jsonify({'success': False, 'error': str(e)}), 500
+
 
 
 if __name__ == '__main__':
