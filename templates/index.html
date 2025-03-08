@@ -1,6 +1,23 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <a href="{{ url_for('add_appointment') }}" class="btn">Adicionar Agendamento</a>
-    <a href="{{ url_for('view_appointments') }}" class="btn">Ver Agendamentos</a>
+    <div class="header">
+        <img src="{{ url_for('static', filename='beauty-icon.png') }}" alt="Ícone Salão de Beleza" class="icon">
+        <h1>Agenda de Beleza</h1>
+    </div>
+
+    <div class="daily-summary">
+        <h2>Resumo do Dia</h2>
+        {% if appointments %}
+            <ul>
+                {% for appointment in appointments %}
+                    <li>
+                        <strong>{{ appointment[5] }}</strong> - {{ appointment[1] }} ({{ appointment[2] }})
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Nenhum agendamento para hoje.</p>
+        {% endif %}
+    </div>
 {% endblock %}

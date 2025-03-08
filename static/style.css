@@ -1,139 +1,3 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #FFF0F5;
-    color: #333;
-}
-
-h1 {
-    color: #C71585;
-}
-
-a {
-    color: #FF69B4;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-form {
-    margin: 20px 0;
-}
-
-label {
-    display: block;
-    margin: 10px 0 5px;
-}
-
-input, select, button {
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #FF69B4;
-    border-radius: 4px;
-}
-
-button {
-    background-color: #FF69B4;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #C71585;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-}
-
-th, td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #FF69B4;
-}
-
-th {
-    background-color: #FF69B4;
-    color: white;
-}
-
-
-.btn {
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 10px;
-    background-color: #FF69B4;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.btn:hover {
-    background-color: #C71585;
-}
-
-
-/* Estilo para o menu vertical */
-.menu-vertical {
-    width: 20%;
-    padding: 10px;
-    background-color: #f8f8f8;
-}
-
-.menu-vertical ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.menu-vertical li {
-    margin-bottom: 10px;
-}
-
-.menu-vertical a {
-    text-decoration: none;
-    color: #333;
-}
-
-.menu-vertical a:hover {
-    color: #FF69B4;
-}
-
-/* Estilo para as seções de agendamentos */
-.section-agendamentos {
-    width: 80%;
-    padding: 10px;
-}
-
-.section-agendamentos h3 {
-    background-color: #FF69B4;
-    padding: 10px;
-    color: white;
-    border-radius: 5px;
-}
-
-.section-agendamentos table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-
-.section-agendamentos th, .section-agendamentos td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-.section-agendamentos tr:hover {
-    background-color: #f5f5f5;
-}
-
 /* Estilos Gerais */
 body {
     font-family: Arial, sans-serif;
@@ -143,108 +7,114 @@ body {
     color: #333;
 }
 
-h2 {
-    text-align: center;
-    color: #C71585;
-}
-
 .container {
-    display: flex;
-    flex-direction: column;
     padding: 10px;
 }
 
-/* Menu Vertical */
-.menu-vertical {
-    background-color: #f8f8f8;
-    padding: 10px;
+/* Cabeçalho */
+.header {
+    text-align: center;
     margin-bottom: 20px;
 }
 
-.menu-vertical h3 {
-    margin: 0 0 10px 0;
-    color: #333;
+.header .icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 10px;
 }
 
-.menu-vertical ul {
+.header h1 {
+    font-size: 24px;
+    color: #C71585;
+    margin: 0;
+}
+
+/* Resumo do Dia */
+.daily-summary {
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.daily-summary h2 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.daily-summary ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
 }
 
-.menu-vertical li {
-    margin-bottom: 10px;
-}
-
-.menu-vertical a {
-    text-decoration: none;
-    color: #333;
+.daily-summary li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
     font-size: 16px;
 }
 
-.menu-vertical a:hover {
-    color: #FF69B4;
+.daily-summary li:last-child {
+    border-bottom: none;
 }
 
-/* Agendamentos por Mês */
-.agendamentos-container {
+/* Menu Suspenso no Rodapé */
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
     width: 100%;
-}
-
-.month-section {
-    margin-bottom: 30px;
-}
-
-.month-section h3 {
     background-color: #FF69B4;
     padding: 10px;
+    text-align: center;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.footer-menu {
+    display: flex;
+    justify-content: space-around;
+}
+
+.footer-menu .btn {
+    background-color: white;
+    color: #FF69B4;
+    padding: 8px 16px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.footer-menu .btn:hover {
+    background-color: #C71585;
     color: white;
+}
+
+/* Estilo para as linhas tachadas */
+tr.pago td {
+    text-decoration: line-through;
+    font-style: italic;
+    color: #888; /* Cor mais clara para serviços pagos */
+}
+
+/* Estilo para os checkboxes */
+input[type="checkbox"] {
+    transform: scale(1.2); /* Aumenta o tamanho do checkbox */
+    margin: 0;
+}
+
+/* Estilo para o botão de atualização */
+.btn {
+    background-color: #FF69B4;
+    color: white;
+    padding: 10px 20px;
+    border: none;
     border-radius: 5px;
-    margin: 0 0 10px 0;
+    cursor: pointer;
+    margin-top: 20px;
 }
 
-.table-container {
-    overflow-x: auto; /* Permite rolagem horizontal */
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-
-th, td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-    white-space: nowrap; /* Evita quebra de linha */
-}
-
-tr:hover {
-    background-color: #f5f5f5;
-}
-
-/* Media Queries para Dispositivos Móveis */
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-    }
-
-    .menu-vertical {
-        width: 100%;
-        margin-bottom: 20px;
-    }
-
-    .agendamentos-container {
-        width: 100%;
-    }
-
-    .month-section h3 {
-        font-size: 18px;
-    }
-
-    th, td {
-        padding: 8px;
-        font-size: 14px;
-    }
+.btn:hover {
+    background-color: #C71585;
 }

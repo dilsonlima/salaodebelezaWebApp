@@ -26,10 +26,50 @@ def init_db():
 
 init_db()
 
-# Rota principal
+#cria banco de dados pago
+def init_db():
+    with sqlite3.connect(DATABASE) as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS appointments (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                client_name TEXT NOT NULL,
+                service_description TEXT NOT NULL,
+                service_value REAL NOT NULL,
+                date TEXT NOT NULL,
+                time TEXT NOT NULL,
+                recurrence TEXT NOT NULL,
+                color TEXT NOT NULL,
+                pago BOOLEAN DEFAULT 0  -- Novo campo (0 = não pago, 1 = pago)
+            )
+        ''')
+        conn.commit()
+
+#Adicionar nova rota para resumo do dia
+from datetime import datetime, time
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    try:
+        with sqlite3.connect(DATABASE) as conn:
+            cursor = conn.cursor()
+            today = datetime.now().strftime('%Y-%m-%d')
+            cursor.execute('SELECT * FROM appointments WHERE date = ? ORDER BY time', (today,))
+            appointments = cursor.fetchall()
+
+            # Remove agendamentos com horários já passados
+            current_time = datetime.now().time()
+            filtered_appointments = []
+            for appointment in appointments:
+                appointment_time = datetime.strptime(appointment[5], '%H:%M').time()  # appointment[5] é a hora
+                if appointment_time >= current_time:
+                    filtered_appointments.append(appointment)
+
+    except sqlite3.Error as e:
+        print(f"Erro no banco de dados: {e}")
+        filtered_appointments = []
+
+    return render_template('index.html', appointments=filtered_appointments)
 
 # Rota para adicionar agendamento
 @app.route('/add', methods=['GET', 'POST'])
@@ -78,6 +118,7 @@ def calculate_recurrence_date(start_date, recurrence, iteration):
         return start_date + relativedelta(months=iteration)
     return start_date
 
+
 # Rota para visualizar agendamentos
 @app.route('/view')
 def view_appointments():
@@ -86,32 +127,36 @@ def view_appointments():
             cursor = conn.cursor()
             cursor.execute('SELECT * FROM appointments ORDER BY date, time')
             appointments = cursor.fetchall()
-
-            # Agrupa os agendamentos por mês e calcula a soma dos valores
-            grouped_appointments = {}
-            colors = ['#FFB6C1', '#FF69B4', '#FF1493', '#C71585']  # Cores para cada mês
-            for appointment in appointments:
-                date = datetime.strptime(appointment[4], '%Y-%m-%d')  # appointment[4] é a data
-                month_year = date.strftime('%Y-%m')  # Formato: "2023-10"
-                month_name = date.strftime('%B %Y')  # Formato: "October 2023"
-                service_value = float(appointment[3])  # appointment[3] é o valor do serviço
-
-                if month_year not in grouped_appointments:
-                    grouped_appointments[month_year] = {
-                        'month_name': month_name,
-                        'color': colors[(date.month - 1) % len(colors)],  # Cor baseada no mês
-                        'total_value': 0.0,  # Inicializa a soma dos valores
-                        'appointments': []
-                    }
-
-                grouped_appointments[month_year]['total_value'] += service_value
-                grouped_appointments[month_year]['appointments'].append(appointment)
-
     except sqlite3.Error as e:
         print(f"Erro no banco de dados: {e}")
-        grouped_appointments = {}
+        appointments = []
 
-    return render_template('view_appointments.html', grouped_appointments=grouped_appointments)
+    return render_template('view_appointments.html', appointments=appointments)
+
+
+#rota para calcular o pago
+@app.route('/update_payment_status', methods=['POST'])
+def update_payment_status():
+    try:
+        with sqlite3.connect(DATABASE) as conn:
+            cursor = conn.cursor()
+            # Obtém todos os IDs dos agendamentos
+            cursor.execute('SELECT id FROM appointments')
+            all_ids = [row[0] for row in cursor.fetchall()]
+
+            # Obtém os IDs dos agendamentos marcados como pagos
+            paid_ids = request.form.getlist('pago')
+
+            # Atualiza o status de pagamento
+            for appointment_id in all_ids:
+                pago = 1 if str(appointment_id) in paid_ids else 0
+                cursor.execute('UPDATE appointments SET pago = ? WHERE id = ?', (pago, appointment_id))
+            conn.commit()
+    except sqlite3.Error as e:
+        print(f"Erro no banco de dados: {e}")
+
+    return redirect(url_for('view_appointments'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)

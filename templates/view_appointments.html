@@ -2,56 +2,48 @@
 
 {% block content %}
     <h2>Agendamentos</h2>
-    <div class="container">
-        <!-- Menu Vertical -->
-        <div class="menu-vertical">
-            <h3>Meses</h3>
-            <ul>
-                {% for month_year, data in grouped_appointments.items() %}
-                    <li>
-                        <a href="#{{ month_year }}">
-                            {{ data.month_name }} - R$ {{ "%.2f"|format(data.total_value) }}
-                        </a>
-                    </li>
+    <form method="POST" action="{{ url_for('update_payment_status') }}">
+        <table>
+            <thead>
+                <tr>
+                    <th>Pago</th>
+                    <th>Cliente</th>
+                    <th>Serviço</th>
+                    <th>Valor</th>
+                    <th>Data</th>
+                    <th>Hora</th>
+                    <th>Recorrência</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments %}
+                    <tr style="background-color: {{ appointment[7] }};">
+                        <td>
+                            <input type="checkbox" name="pago" value="{{ appointment[0] }}" 
+                                   {% if appointment[8] %}checked{% endif %}>
+                        </td>
+                        <td {% if appointment[8] %}class="pago"{% endif %}>
+                            {{ appointment[1] }}
+                        </td>
+                        <td {% if appointment[8] %}class="pago"{% endif %}>
+                            {{ appointment[2] }}
+                        </td>
+                        <td {% if appointment[8] %}class="pago"{% endif %}>
+                            R$ {{ "%.2f"|format(appointment[3]) }}
+                        </td>
+                        <td {% if appointment[8] %}class="pago"{% endif %}>
+                            {{ appointment[4] }}
+                        </td>
+                        <td {% if appointment[8] %}class="pago"{% endif %}>
+                            {{ appointment[5] }}
+                        </td>
+                        <td {% if appointment[8] %}class="pago"{% endif %}>
+                            {{ appointment[6] }}
+                        </td>
+                    </tr>
                 {% endfor %}
-            </ul>
-        </div>
-
-        <!-- Agendamentos por Mês -->
-        <div class="agendamentos-container">
-            {% for month_year, data in grouped_appointments.items() %}
-                <div id="{{ month_year }}" class="month-section">
-                    <h3 style="background-color: {{ data.color }};">
-                        {{ data.month_name }} - Total: R$ {{ "%.2f"|format(data.total_value) }}
-                    </h3>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Cliente</th>
-                                    <th>Serviço</th>
-                                    <th>Valor</th>
-                                    <th>Data</th>
-                                    <th>Hora</th>
-                                    <th>Recorrência</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for appointment in data.appointments %}
-                                    <tr style="background-color: {{ data.color }}20;">
-                                        <td>{{ appointment[1] }}</td>
-                                        <td>{{ appointment[2] }}</td>
-                                        <td>R$ {{ "%.2f"|format(appointment[3]) }}</td>
-                                        <td>{{ appointment[4] }}</td>
-                                        <td>{{ appointment[5] }}</td>
-                                        <td>{{ appointment[6] }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
+            </tbody>
+        </table>
+        <button type="submit" class="btn">Atualizar Status de Pagamento</button>
+    </form>
 {% endblock %}
