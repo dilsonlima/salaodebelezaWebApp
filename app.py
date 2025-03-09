@@ -275,18 +275,17 @@ def update_bill_payment_status():
         return jsonify({'success': False, 'error': str(e)}), 500
     
     #Rota para excluir uma conta
-    @app.route('/delete_bill/<int:bill_id>', methods=['DELETE'])
-    def delete_bill(bill_id):
-        try:
-            with sqlite3.connect(DATABASE) as conn:
-                cursor = conn.cursor()
-                cursor.execute('DELETE FROM bills WHERE id = ?', (bill_id,))
+@app.route('/delete_bill/<int:bill_id>', methods=['DELETE'])
+def delete_bill(bill_id):
+    try:
+        with sqlite3.connect(DATABASE) as conn:
+            cursor = conn.cursor()
+            cursor.execute('DELETE FROM bills WHERE id = ?', (bill_id,))
             conn.commit()
-            return jsonify({'success': True})
-        except Exception as e:
-        
-            print(f"Erro ao excluir a conta: {e}")
-        return jsonify({'success': False, 'error': str(e)}), 500
+            return jsonify({'success': True})  # Retorna um JSON válido
+    except Exception as e:
+        print(f"Erro ao excluir a conta: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500  # Retorna um JSON válido em caso de erro
 
 
 

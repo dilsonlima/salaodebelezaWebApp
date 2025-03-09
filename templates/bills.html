@@ -85,31 +85,34 @@
                 alert('Erro ao salvar os pagamentos.');
             });
         }
-
+        //Funcao para deletar um registro
         function deleteBill(billId) {
-            if (confirm('Tem certeza que deseja excluir esta conta?')) {
-                fetch(`/delete_bill/${billId}`, {
-                    method: 'DELETE',
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(err => { throw new Error(err.error || 'Erro na requisição'); });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        alert('Conta excluída com sucesso!');
-                        document.getElementById(`row-${billId}`).remove();
-                    } else {
-                        throw new Error(data.error || 'Erro ao excluir a conta');
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro:', error);
-                    alert(error.message);
-                });
+    if (confirm('Tem certeza que deseja excluir esta conta?')) {
+        fetch(`/delete_bill/${billId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw new Error(err.error || 'Erro na requisição'); });
             }
-        }
+            return response.json();  // Espera uma resposta JSON
+        })
+        .then(data => {
+            if (data.success) {
+                alert('Conta excluída com sucesso!');
+                document.getElementById(`row-${billId}`).remove();  // Remove a linha da tabela
+            } else {
+                throw new Error(data.error || 'Erro ao excluir a conta');
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert(error.message);  // Exibe a mensagem de erro
+        });
+    }
+}
     </script>
 {% endblock %}
