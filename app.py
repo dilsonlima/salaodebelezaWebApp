@@ -75,12 +75,20 @@ def add_appointment():
         try:
             with sqlite3.connect(DATABASE) as conn:
                 cursor = conn.cursor()
-                for i in range(4):
-                    new_date = calculate_recurrence_date(date, recurrence, i)
+                if recurrence == '1x':
+                    # Insere apenas uma vez
                     cursor.execute('''
                         INSERT INTO appointments (client_name, service_description, service_value, date, time, recurrence, color)
                         VALUES (?, ?, ?, ?, ?, ?, ?)
-                    ''', (client_name, service_description, service_value, new_date.strftime('%Y-%m-%d'), time, recurrence, color))
+                    ''', (client_name, service_description, service_value, date, time, recurrence, color))
+                else:
+                    # Insere as recorrências
+                    for i in range(4):
+                        new_date = calculate_recurrence_date(date, recurrence, i)
+                        cursor.execute('''
+                            INSERT INTO appointments (client_name, service_description, service_value, date, time, recurrence, color)
+                            VALUES (?, ?, ?, ?, ?, ?, ?)
+                        ''', (client_name, service_description, service_value, new_date.strftime('%Y-%m-%d'), time, recurrence, color))
                 conn.commit()
         except sqlite3.Error as e:
             print(f"Erro no banco de dados: {e}")
