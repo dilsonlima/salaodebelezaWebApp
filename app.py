@@ -10,6 +10,7 @@ DATABASE = 'database.db'
 def init_db():
     with sqlite3.connect(DATABASE) as conn:
         cursor = conn.cursor()
+        # Tabela de agendamentos
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS appointments (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -17,10 +18,20 @@ def init_db():
                 service_description TEXT NOT NULL,
                 service_value REAL NOT NULL,
                 date TEXT NOT NULL,
-                start_time TEXT NOT NULL,  -- Novo campo: horário de início
-                end_time TEXT NOT NULL,    -- Novo campo: horário de fim
+                start_time TEXT NOT NULL,
+                end_time TEXT NOT NULL,
                 recurrence TEXT NOT NULL,
                 color TEXT NOT NULL,
+                pago BOOLEAN DEFAULT 0
+            )
+        ''')
+        # Tabela de contas a pagar
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS bills (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                description TEXT NOT NULL,
+                due_date TEXT NOT NULL,
+                value REAL NOT NULL,
                 pago BOOLEAN DEFAULT 0
             )
         ''')
@@ -197,6 +208,85 @@ def delete_appointment(appointment_id):
     except Exception as e:
             print(f"Erro ao excluir o agendamento: {e}")
     return jsonify({'success': False, 'error': str(e)}), 500
+
+#Rota para contas a pagar
+@app.route('/bills')
+def view_bills():
+    try:
+        with sqlite3.connect(DATABASE) as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT * FROM bills ORDER BY due_date')
+            bills = cursor.fetchall()
+    except sqlite3.Error as e:
+        print(f"Erro no banco de dados: {e}")
+        bills = []
+
+    return render_template('bills.html', bills=bills)
+
+#Rota para adicionar nova conta
+@app.route('/add_bill', methods=['GET', 'POST'])
+def add_bill():
+    if request.method == 'POST':
+        description = request.form['description']
+        due_date = request.form['due_date']
+        value = request.form['value']
+
+        try:
+            with sqlite3.connect(DATABASE) as conn:
+                cursor = conn.cursor()
+                cursor.execute('''
+                    INSERT INTO bills (description, due_date, value)
+                    VALUES (?, ?, ?)
+                ''', (description, due_date, value))
+                conn.commit()
+        except sqlite3.Error as e:
+            print(f"Erro no banco de dados: {e}")
+
+        return redirect(url_for('view_bills'))
+
+    return render_template('add_bill.html')
+
+#Rota para atualizar o status de pagamento
+@app.route('/update_bill_payment_status', methods=['POST'])
+def update_bill_payment_status():
+    try:
+        data = request.get_json()
+        if not data or 'billIds' not in data:
+            return jsonify({'success': False, 'error': 'Dados inválidos'}), 400
+
+        bill_ids = data['billIds']
+
+        with sqlite3.connect(DATABASE) as conn:
+            cursor = conn.cursor()
+            if bill_ids:
+                cursor.execute(
+                    'UPDATE bills SET pago = 1 WHERE id IN ({})'.format(
+                        ','.join(['?'] * len(bill_ids))
+                    ), bill_ids)
+            cursor.execute(
+                'UPDATE bills SET pago = 0 WHERE id NOT IN ({})'.format(
+                    ','.join(['?'] * len(bill_ids)) if bill_ids else '1=1'
+                ), bill_ids if bill_ids else [])
+            conn.commit()
+
+        return jsonify({'success': True})
+    except Exception as e:
+        print(f"Erro ao atualizar o status de pagamento: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+    
+    #Rota para excluir uma conta
+    @app.route('/delete_bill/<int:bill_id>', methods=['DELETE'])
+    def delete_bill(bill_id):
+        try:
+            with sqlite3.connect(DATABASE) as conn:
+                cursor = conn.cursor()
+                cursor.execute('DELETE FROM bills WHERE id = ?', (bill_id,))
+            conn.commit()
+            return jsonify({'success': True})
+        except Exception as e:
+        
+            print(f"Erro ao excluir a conta: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 

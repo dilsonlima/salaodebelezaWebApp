@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="add-appointment-container">
+        <h2>Adicionar Conta a Pagar</h2>
+        <form method="POST" class="add-appointment-form">
+            <div class="form-group">
+                <label for="description">Descrição:</label>
+                <input type="text" id="description" name="description" required>
+            </div>
+
+            <div class="form-group">
+                <label for="due_date">Data de Vencimento:</label>
+                <input type="date" id="due_date" name="due_date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="value">Valor:</label>
+                <input type="number" step="0.01" id="value" name="value" required>
+            </div>
+
+            <button type="submit" class="btn">Adicionar</button>
+        </form>
+    </div>
+{% endblock %}
