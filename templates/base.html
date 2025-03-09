@@ -5,6 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Agenda de Beleza{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        // Função para ativar o modo de tela cheia
+        function openFullscreen() {
+            const elem = document.documentElement; // Elemento raiz (html)
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.mozRequestFullScreen) { // Firefox
+                elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) { // Chrome, Safari e Opera
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { // IE/Edge
+                elem.msRequestFullscreen();
+            }
+        }
+
+        // Ativar o modo de tela cheia ao carregar a página
+        window.onload = function() {
+            openFullscreen();
+        };
+    </script>
 </head>
 <body>
     <!-- Cabeçalho com logo e título -->

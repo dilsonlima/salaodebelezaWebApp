@@ -3,15 +3,15 @@
 {% block content %}
 
     <div class="daily-summary">
-        <h2>Resumo do Dia</h2>
+        <h2>Próximos eventos do dia</h2>
         {% if appointments %}
-            <ul>
-                {% for appointment in appointments %}
-                    <li>
-                        <strong>{{ appointment[5] }}</strong> - {{ appointment[1] }} ({{ appointment[2] }})
-                    </li>
-                {% endfor %}
-            </ul>
+        <ul>
+            {% for appointment in appointments %}
+                <li>
+                    <strong>{{ appointment[5] }}</strong> - {{ appointment[1] }} ({{ appointment[2] }})
+                </li>
+            {% endfor %}
+        </ul>
         {% else %}
             <p>Nenhum agendamento para hoje.</p>
         {% endif %}

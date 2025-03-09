@@ -38,7 +38,8 @@
                                     <th>Serviço</th>
                                     <th>Valor</th>
                                     <th>Data</th>
-                                    <th>Hora</th>
+                                    <th>Início</th>  <!-- Novo campo -->
+                                    <th>Fim</th>     <!-- Novo campo -->
                                     <th>Recorrência</th>
                                 </tr>
                             </thead>
@@ -48,32 +49,34 @@
                                 <tr id="row-{{ appointment[0] }}" style="background-color: {{ data.color }}20;">
                                     <td>
                                         <input type="checkbox" name="pago" value="{{ appointment[0] }}" 
-                                            {% if appointment[8] %}checked{% endif %}>
+                                            {% if appointment[9] %}checked{% endif %}>
                                     </td>
-                                    <td {% if appointment[8] %}class="pago"{% endif %}>
+                                    <td {% if appointment[9] %}class="pago"{% endif %}>
                                         {{ appointment[1] }}
                                     </td>
-                                    <td {% if appointment[8] %}class="pago"{% endif %}>
+                                    <td {% if appointment[9] %}class="pago"{% endif %}>
                                         {{ appointment[2] }}
                                     </td>
-                                    <td {% if appointment[8] %}class="pago"{% endif %}>
+                                    <td {% if appointment[9] %}class="pago"{% endif %}>
                                         R$ {{ "%.2f"|format(appointment[3]) }}
                                     </td>
-                                    <td {% if appointment[8] %}class="pago"{% endif %}>
+                                    <td {% if appointment[9] %}class="pago"{% endif %}>
                                         {{ appointment[4] }}
                                     </td>
-                                    <td {% if appointment[8] %}class="pago"{% endif %}>
-                                        {{ appointment[5] }}
+                                    <td {% if appointment[9] %}class="pago"{% endif %}>
+                                        {{ appointment[5] }}  <!-- Horário de início -->
                                     </td>
-                                    <td {% if appointment[8] %}class="pago"{% endif %}>
-                                        {{ appointment[6] }}
+                                    <td {% if appointment[9] %}class="pago"{% endif %}>
+                                        {{ appointment[6] }}  <!-- Horário de fim -->
+                                    </td>
+                                    <td {% if appointment[9] %}class="pago"{% endif %}>
+                                        {{ appointment[7] }}
                                     </td>
                                     <td>
-                                        <!-- Botão de exclusão -->
                                         <button class="btn-delete" onclick="deleteAppointment({{ appointment[0] }})">Excluir</button>
                                     </td>
-                                </tr>                              
-                      {% endfor %}
+                                </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -84,7 +87,7 @@
 
     <!-- JavaScript para salvar os pagamentos -->
     <script>
-function savePayments() {
+    function savePayments() {
     const checkboxes = document.querySelectorAll('input[name="pago"]'); // Coleta todos os checkboxes
     const appointmentIds = Array.from(checkboxes).map(checkbox => checkbox.value);
     const checkedIds = Array.from(checkboxes)
@@ -109,7 +112,7 @@ function savePayments() {
             // Atualiza o estilo das linhas
             appointmentIds.forEach(id => {
                 const row = document.getElementById(`row-${id}`);
-                const checkbox = row.querySelector('input[name="pago"]');
+                 const checkbox = row.querySelector('input[name="pago"]');
                 if (checkbox.checked) {
                     // Adiciona a classe 'pago' para linhas marcadas
                     row.querySelectorAll('td').forEach(td => td.classList.add('pago'));
@@ -118,17 +121,17 @@ function savePayments() {
                     row.querySelectorAll('td').forEach(td => td.classList.remove('pago'));
                 }
             });
-            alert('Pagamentos salvos com sucesso!');
-        } else {
-            alert('Erro ao salvar os pagamentos: ' + (data.error || ''));
-        }
-    })
-    .catch(error => {
-        console.error('Erro:', error);
-        alert('Erro ao salvar os pagamentos.');
-    });
-}
-    </script>
+                alert('Pagamentos salvos com sucesso!');
+            } else {
+                alert('Erro ao salvar os pagamentos: ' + (data.error || ''));
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Erro ao salvar os pagamentos.');
+        });
+    }
+        </script>
 
 <!-- script para deletar os agendamentos-->
     <script>
